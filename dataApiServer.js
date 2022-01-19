@@ -39,12 +39,10 @@ app.listen(3000,function(){
 //req : 사용자가 호출할 때 보낸 파라미터를 담는 변수
 //res : 사용자에게 보낼 객체.
 app.get('/users',function(req,res){
-    connection.query('SELECT * FROM objectInfo',async (error,result,field)=>{
-        if(error){
-            console.log(error);
-        }
+    connection.query('SELECT * FROM objectInfo',async(error,result,field)=>{
+        if(error){console.log(error);}
         res.send(result);
-    })
+    });
 });
 
 app.post('/users/save',(req,res)=>{
