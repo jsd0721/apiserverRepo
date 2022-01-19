@@ -52,7 +52,6 @@ app.post('/users/save',(req,res)=>{
         const name = req.body.name;
         const positionX = req.body.position_X; 
         const positionY = req.body.position_Y; 
-        console.log(positionX);
         const positionZ = req.body.position_Z;
         const lengthX = req.body.length_X;
         const lengthY = req.body.length_Y;
@@ -67,8 +66,8 @@ app.post('/users/save',(req,res)=>{
 });
 
 
-app.get('/users/:type',(req,res)=>{
-    const value = req.params.type;
+app.get('/users/:objectname',(req,res)=>{
+    const value = req.params.objectname;
     console.log(value);
     connection.query(`SELECT * FROM userinfo WHERE name = '${value}'`,async (error,result,field)=>{
         if(error){
