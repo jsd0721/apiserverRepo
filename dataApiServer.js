@@ -38,14 +38,15 @@ app.listen(3000,function(){
 //데이터 가져오는 api
 //req : 사용자가 호출할 때 보낸 파라미터를 담는 변수
 //res : 사용자에게 보낼 객체.
-app.get('/users',function(req,res){
+
+app.get('/objects',function(req,res){
     connection.query('SELECT * FROM objectInfo',async(error,result,field)=>{
         if(error){console.log(error);}
         res.send(result);
     });
 });
 
-app.post('/users/save',(req,res)=>{
+app.post('/objects/save',(req,res)=>{
     try{
         const name = req.body.name;
         const positionX = req.body.position_X; 
@@ -64,7 +65,7 @@ app.post('/users/save',(req,res)=>{
 });
 
 
-app.get('/users/:objectname',(req,res)=>{
+app.get('/object/:objectname',(req,res)=>{
     const value = req.params.objectname;
     console.log(value);
     connection.query(`SELECT * FROM userinfo WHERE name = '${value}'`,async (error,result,field)=>{
