@@ -42,6 +42,7 @@ app.listen(3000,function(){
 app.get('/objects',function(req,res){
     connection.query('SELECT * FROM objectInfo',( error,result,field )=>{
         if(error){console.log(error);}
+        
         res.send(result);
     });
 });
@@ -71,6 +72,8 @@ app.get('/objects/:objectname',(req,res)=>{
     connection.query(`SELECT * FROM objectInfo WHERE name = '${value}'`,( error,result,field )=>{
         if(error){
             console.log("모종의 이유로 데이터를 찾을 수 없습니다");
+        }else if(result === null){
+            res.send("데이터를 찾을 수 없음.")
         }
         res.send(result[0]);
     })
