@@ -58,13 +58,42 @@ app.post('/objects/save',(req,res)=>{
         const lengthZ = req.body.length_Z; 
         const rad = req.body.Rad;
         connection.query(`INSERT INTO objectInfo (name, positionX, positionY, positionZ, lengthX, lengthY, lengthZ, rad)
-        values('${name}', '${positionX}', '${positionY}', '${positionZ}', '${lengthX}', '${lengthY}', '${lengthZ}', '${rad}')`);
+            values('${name}', '${positionX}', '${positionY}', '${positionZ}', '${lengthX}', '${lengthY}', '${lengthZ}', '${rad}')`);
         res.send("data saved");
     }catch(e){
         console.log(e);
     }
 });
 
+app.post('/objects/modify',(req,res) =>{
+    try {
+        const id = req.body.id;
+        const name = req.body.name;
+        const positionX = req.body.position_X; 
+        const positionY = req.body.position_Y; 
+        const positionZ = req.body.position_Z;
+        const lengthX = req.body.length_X;
+        const lengthY = req.body.length_Y;
+        const lengthZ = req.body.length_Z; 
+        const rad = req.body.Rad;
+        connection.query(`UPDATE objectInfo SET name= '${name}' , lengthX = '${lengthX}', lengthY = '${lengthY}', lengthZ = '${lengthZ}'
+            rad = '${rad}' WHERE id='${id}`);
+        res.send("data modified")
+    } catch (e) {
+        console.log(e)
+    }
+})
+
+app.post('/objects/delete',(req,res) =>{
+    try {
+        const id = req.body.id;
+        const name = req.body.name;
+        connection.query(`DELETE FROM objectInfo WHERE id = '${id}' and '${name}`);
+        res.send('completed to deleteNB');
+    } catch (e) {
+        console.log(e)
+    }
+})
 
 app.get('/objects/:objectname',(req,res)=>{
     const value = req.params.objectname;
