@@ -78,7 +78,7 @@ app.post('/objects/modify',(req,res) =>{
         const rad = req.body.Rad;
         connection.query(`UPDATE objectInfo SET name= '${name}' , lengthX = '${lengthX}', lengthY = '${lengthY}', lengthZ = '${lengthZ}'
             rad = '${rad}' WHERE id='${id}`);
-        res.send("data modified")
+        res.send(result+"data modified");
     } catch (e) {
         console.log(e)
     }
