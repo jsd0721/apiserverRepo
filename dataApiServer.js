@@ -88,11 +88,11 @@ app.post('/objects/delete',(req,res) =>{
     try {
         const id = req.body.id;
         const name = req.body.name;
-        connection.query(`DELETE FROM objectInfo WHERE id = '${id}' and  name = '${name}`);
-        res.send('id :'+ id + ' name :' +name);
+        connection.query(`DELETE FROM objectInfo WHERE id = '${id}' and  name = '${name}' `);
+        res.send('id :'+ id + ', name :' +name);
         res.send('completed to delete');
-    } catch (e) {
-        console.log(e)
+    } catch (error) {
+        console.log(error)
     }
 })
 
