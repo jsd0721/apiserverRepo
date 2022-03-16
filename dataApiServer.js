@@ -47,6 +47,7 @@ app.get('/objects',function(req,res){
     });
 });
 
+
 app.post('/objects/save',(req,res)=>{
     try{
         const name = req.body.name;
@@ -108,3 +109,11 @@ app.get('/objects/:objectname',(req,res)=>{
         res.send(result[0]);
     })
 })
+
+// instaView
+app.get('/instaView/load', function(req,res){
+    connection.query('SELECT * FROM instaView_data',( error,result,field )=>{
+        if(error){console.log(error);}
+        res.send(result);
+    });
+});
