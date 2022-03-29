@@ -110,6 +110,38 @@ app.get('/objects/:objectname',(req,res)=>{
     })
 })
 
+//login
+let id;
+app.post('/login', function(req,res){
+    id = req.body.id;
+    const pw = req.body.pw;
+    connection.query(`SELECT * FROM user_info WHERE id='${id}'`,( error,result,field )=>{
+        if(error){console.log(error);}
+        console.log(result);
+        if(result[0].password===pw){
+            res.send(true);
+        }else{
+            res.send(false);
+        }
+    });
+});
+
+app.get('/login/toCustom',function(req,res){
+    if(id==='user'){
+        connection.query(`SELECT * FROM instaView_data`,( error,result,field )=>{
+            if(error){console.log(error);}
+            console.log(result);
+            res.send(result);
+        });
+    }else{
+        connection.query(`SELECT * FROM instaView_data WHERE id = '${id}'`,( error,result,field )=>{
+            if(error){console.log(error);}
+            console.log(result);
+            res.send(result);
+        });
+    }
+})
+
 // instaView
 app.get('/instaView/load', function(req,res){
     connection.query('SELECT * FROM instaView_data',( error,result,field )=>{
@@ -117,3 +149,32 @@ app.get('/instaView/load', function(req,res){
         res.send(result);
     });
 });
+
+// custom
+let customData;
+app.post('/custom/data',(req,res)=>{
+    try {
+        customData = req.body;
+        console.log("post");
+        console.log(customData);
+    } catch (e) {
+        console.log(e)
+    }
+});
+
+app.get('/custom/data',(req,res) =>{
+    try {
+        console.log(customData);
+        console.log("get");
+        if(id.length!=0 || typeof id != 'undefined'){
+            res.send(customData)
+        }
+    } catch (e) {
+        console.log(e);
+    }
+});
+
+//logout
+app.get('/logout',function(){
+    id="";
+})
