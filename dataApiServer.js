@@ -1,6 +1,5 @@
 const express = require('express');
 const mysql = require('mysql');
-const bodyParser = require('body-parser');
 const cors = require('cors');
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
@@ -62,8 +61,8 @@ app.use(session({
         secure:true
     }
 }));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended : false}));
+app.use(express.json());
+app.use(express.urlencoded({extended : false}));
 app.use(cors(corsOptions));
 
 // app.listen(3000,function(){
@@ -145,62 +144,6 @@ app.get('/objects/:objectname',(req,res)=>{
         res.send(result[0]);
     })
 })
-//-----------------------------------지적도 api------------------------------------------------------------------
-//login
-
-app.get('/login/toCustom',function(req,res){
-    const id = req.session.loginInfo.id;
-    
-    console.log(id);
-    if(id_global==='user'){
-        connection.query(`SELECT * FROM instaView_data`,( error,result,field )=>{
-            if(error){console.log(error);}
-            console.log(result);
-            res.send(result);
-        });
-    }else{
-        connection.query(`SELECT * FROM instaView_data WHERE id = 'jsd123'`,( error,result,field )=>{
-            if(error){console.log(error);}
-            console.log(result);
-            res.send(result);
-        });
-    }
-})
-// instaView
-app.get('/instaView/load', function(req,res){
-    connection.query('SELECT * FROM instaView_data',( error,result,field )=>{
-        if(error){console.log(error);}
-        res.send(result);
-    });
-});
-
-// custom
-let customData;
-app.post('/custom/data',(req,res)=>{
-    try {
-        customData = req.body;
-        console.log("post");
-        console.log(customData);
-    } catch (e) {
-        console.log(e)
-    }
-});
-
-app.get('/custom/data',(req,res) =>{
-    try {
-        console.log(customData);
-        console.log("get");
-        res.send(customData)
-    } catch (e) {
-        console.log(e);
-    }
-});
-
-//logout
-app.get('/logout',function(){
-    id="";
-})
-
 
 //---------------------------------loginApi-------------------------
 
@@ -250,7 +193,6 @@ const afterSessionSaved = (req,res)=>{
 
 app.post('/login',(req,res)=>{
     const id = req.body.id;
-    id_global =id;
     const password = req.body.password;
     connection.query(`SELECT id,password FROM user_info WHERE id = '${id}' AND password = '${password}'`,(err,rows,field)=>{
         if(err)throw err;
@@ -270,7 +212,7 @@ app.post('/login',(req,res)=>{
 });
 
 app.get('/loginCheck',(req,res)=>{
-    console.log(req.session);
+    console.log(req.session.loginInfo);
     if(req.session.loginInfo){
         res.send({loggedIn : true, loginID : req.session.loginInfo.id});
     }else{
@@ -283,3 +225,77 @@ https.createServer(https_options,app,(req,res)=>{
 }).listen(port,function(){
     console.log(port + "connected");
 });
+
+//-----------------------------------지적도 api------------------------------------------------------------------
+//login
+
+app.post('/data/inquire',function(req,res){
+    const id = req.session.loginInfo.id;
+    const dataSet = req.body.name;
+    
+    console.log(req.body);
+    console.log(`${id}님이 ${dataSet} 데이터를 조회함`);
+
+    if(id==='admin'){
+        //원하는 데이터 셋이 없을 때 테이블의 전체 데이터 responce
+        if(dataSet === null || dataSet === undefined){
+            connection.query(`SELECT * FROM instaView_data`,( error,result,field )=>{
+                if(error){console.log(error);}
+                for(data in result){console.log(data.name);}
+                res.send(result);
+            });
+        }else{
+            //dataset의 이름을 받았을때는 그 데이터셋을 보내줌
+            connection.query(`SELECT * FROM instaView_data WHERE num = ${dataSet}`,(err,result,field)=>{
+                if(err){console.log(err)}
+                console.log(result);
+                req.session.nowContent = dataSet;
+                res.send(result);
+            });
+        }
+    }else{
+        //원하는 데이터 셋이 없을 때 그 유저의 전체 데이터 responce
+        if(dataSet === null || dataSet === undefined){
+            connection.query(`SELECT * FROM instaView_data WHERE id = '${id}'`,( error,result,field )=>{
+                if(error){console.log(error);}
+                for(data in result){console.log(result[data].name);}
+                res.send(result);
+            });
+        //데이터셋의 이름을 request 했다면 그 데이터셋을 responce
+        }else{
+            connection.query(`SELECT * FROM instaView_data WHERE id = '${id}' AND num = ${dataSet}`,(err,result,field)=>{
+                if(err){console.log(err)}
+                console.log(`조회 item : ${result[0]}`);
+                req.session.nowContent = dataSet;
+                res.send(result);
+            });
+        }
+    }
+})
+
+// custom
+// let customData;
+// app.post('/custom/data',(req,res)=>{
+//     try {
+//         customData = req.body;
+//         console.log("post");
+//         console.log(customData);
+//     } catch (e) {
+//         console.log(e)
+//     }
+// });
+
+// app.get('/custom/data',(req,res) =>{
+//     try {
+//         console.log(customData);
+//         console.log("get");
+//         res.send(customData)
+//     } catch (e) {
+//         console.log(e);
+//     }
+// });
+
+//logout
+app.get('/logout',function(){
+    id="";
+})
