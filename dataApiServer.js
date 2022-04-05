@@ -273,6 +273,14 @@ app.post('/data/inquire',function(req,res){
     }
 })
 
+// custom / favorite 
+app.post('/data/favorite/modify',function(req,res){
+    const id = req.session.loginInfo.id;
+    const name = req.body.name;
+    const favorite = req.body.favorite;
+    connection.query(`UPDATE instaView_data SET favorite='${favorite}' WHERE id = ${id} AND name = ${name}`);
+})
+
 // custom
 // let customData;
 // app.post('/custom/data',(req,res)=>{
