@@ -14,9 +14,9 @@ const server = https.createServer(app);
 
 
 const https_options = {
-    key : fs.readFileSync("./key/server.key"),
-    cert : fs.readFileSync("./key/server.crt"),
-    ca: fs.readFileSync("./key/server.csr")
+    key : fs.readFileSync("./key/withdrone.tk-key.pem"),
+    cert : fs.readFileSync("./key/withdrone.tk-crt.pem"),
+    ca: fs.readFileSync("./key/withdrone.tk-chain.pem")
 }
 
 const corsOptions = {
@@ -58,7 +58,8 @@ app.use(session({
         maxAge:60*60*1000,
         httpOnly:true,
         sameSite:'none',
-        secure:true
+        secure:true,
+        rolling : true
     }
 }));
 app.use(express.json());
@@ -278,32 +279,11 @@ app.post('/data/favorite/modify',function(req,res){
     const id = req.session.loginInfo.id;
     const name = req.body.name;
     const favorite = req.body.favorite;
-    connection.query(`UPDATE instaView_data SET favorite='${favorite}' WHERE id = ${id} AND name = ${name}`);
+    connection.query(`UPDATE instaView_data SET favorite='${favorite}' WHERE id = '${id}' AND name = '${name}'`);
 })
 
-// custom
-// let customData;
-// app.post('/custom/data',(req,res)=>{
-//     try {
-//         customData = req.body;
-//         console.log("post");
-//         console.log(customData);
-//     } catch (e) {
-//         console.log(e)
-//     }
-// });
-
-// app.get('/custom/data',(req,res) =>{
-//     try {
-//         console.log(customData);
-//         console.log("get");
-//         res.send(customData)
-//     } catch (e) {
-//         console.log(e);
-//     }
-// });
-
 //logout
-app.get('/logout',function(){
-    id="";
+app.post('/user/logout',(req,res)=>{
+    req.session.destroy();
+    res.send('success');
 })
