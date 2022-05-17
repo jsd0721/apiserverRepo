@@ -4,20 +4,10 @@ const cors = require('cors');
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
 const cookieParser = require('cookie-parser');
-const https = require('https');
 const fs = require('fs');
-const port = process.env.PORT || 8443;
+const port = process.env.PORT || 443;
 
 const app = express();
-
-const server = https.createServer(app);
-
-
-const https_options = {
-    key : fs.readFileSync("./key/withdrone.tk-key.pem"),
-    cert : fs.readFileSync("./key/withdrone.tk-crt.pem"),
-    ca: fs.readFileSync("./key/withdrone.tk-chain.pem")
-}
 
 const corsOptions = {
     origin: 'https://withdrone.tk',
@@ -51,6 +41,7 @@ app.use(cookieParser());
 app.use(session({
     secret:'iwanttoquitmyjob',
     resave:false,
+    proxy:true,
     saveUninitialized:false,
     store : new FileStore(),
     cookie:{
@@ -66,9 +57,10 @@ app.use(express.json());
 app.use(express.urlencoded({extended : false}));
 app.use(cors(corsOptions));
 
-// app.listen(3000,function(){
-//     console.log(`server start, port : 3000`);
-// });
+const port_http = 3000;
+ app.listen(port_http,function(){
+     console.log(`server start, port : ${port_http}`);
+ });
 
 
 //데이터 가져오는 api
@@ -221,16 +213,13 @@ app.get('/loginCheck',(req,res)=>{
     }
 });
 
-https.createServer(https_options,app,(req,res)=>{
-    res.send("hello");
-}).listen(port,function(){
-    console.log(port + "connected");
-});
 
 //-----------------------------------지적도 api------------------------------------------------------------------
 //login
 
 app.post('/data/inquire',function(req,res){
+
+    console.log(req.session);
     const id = req.session.loginInfo.id;
     const dataSet = req.body.name;
     
