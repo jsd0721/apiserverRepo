@@ -157,7 +157,7 @@ app.post("/join",(req,res)=>{
 
 //중복확인 api
 app.post('/join/isidoverlap',(req,res)=>{
-    if(req.body,userID === ""){
+    if(req.body.userID === ""){
         res.send("2");
     }else{
         connection.query(`SELECT * FROM user_info WHERE id = '${req.body.userID}'`,(err,rows,fields)=>{
