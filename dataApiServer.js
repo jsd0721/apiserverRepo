@@ -4,8 +4,7 @@ const cors = require('cors');
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
 const cookieParser = require('cookie-parser');
-const fs = require('fs');
-const port = process.env.PORT || 443;
+const nodeMMailer = require('nodemailer');
 
 const app = express();
 
@@ -158,19 +157,22 @@ app.post("/join",(req,res)=>{
 
 //중복확인 api
 app.post('/join/isidoverlap',(req,res)=>{
-    connection.query(`SELECT * FROM user_info WHERE id = '${req.body.userID}'`,(err,rows,fields)=>{
-        if(err){
-            res.send(err);
-        }else{
-            if(rows[0] !== undefined){
-                console.log(rows);
-                res.send("1");
+    if(req.body,userID === ""){
+        res.send("2");
+    }else{
+        connection.query(`SELECT * FROM user_info WHERE id = '${req.body.userID}'`,(err,rows,fields)=>{
+            if(err){
+                res.send(err);
             }else{
-                res.send("0");
+                if(rows[0] !== undefined){
+                    console.log(rows);
+                    res.send("1");
+                }else{
+                    res.send("0");
+                }
             }
-        }
-    });
-
+        });
+    }
 });
 
 app.get('/',(req,res)=>{
