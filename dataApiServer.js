@@ -5,6 +5,7 @@ const session = require('express-session');
 const FileStore = require('session-file-store')(session);
 const cookieParser = require('cookie-parser');
 const nodeMMailer = require('nodemailer');
+const crypto = require('crypto');
 
 const app = express();
 
@@ -139,12 +140,25 @@ app.get('/objects/:objectname',(req,res)=>{
 
 //---------------------------------loginApi-------------------------
 
+const hashingPassword = (password,salt)=>{
+    const hashedPW = crypto.createHash('sha256').update(password+salt).digest("hex");
+    return hashedPW;
+}
+
 app.post("/join",(req,res)=>{
 
     const id = req.body.id;
     const password = req.body.password;
+    const email = req.body.email;
+    const name = req.body.name;
+    const position = req.body.position;
+    const region = req.body.region;
+
+    const saltValue = crypto.randomBytes(35).toString('base64');
+    const hashedPW = hashingPassword(password,saltValue);
     
-    connection.query(`INSERT INTO user_info(id,password)values('${id}','${password}');`,(err,rows,fields)=>{
+    connection.query(`INSERT INTO user_info(id,password,email,name,position,region,saltValue)
+        values('${id}','${hashedPW}','${email}','${name}','${position}','${region}','${saltValue}');`,(err,rows,fields)=>{
         if(err){
             console.log(err);
             res.send("에러");
@@ -189,17 +203,26 @@ const afterSessionSaved = (req,res)=>{
 app.post('/login',(req,res)=>{
     const id = req.body.id;
     const password = req.body.password;
-    connection.query(`SELECT id,password FROM user_info WHERE id = '${id}' AND password = '${password}'`,(err,rows,field)=>{
+
+    connection.query(`SELECT id,password,name,position,saltValue FROM user_info WHERE id = '${id}';`,(err,rows,field)=>{
         if(err)throw err;
-        console.log(rows[0]);
         if(rows[0] !== undefined){
-            if(req.session.loginInfo){
-                afterSessionSaved(req,res);
+            const hashedPassword = hashingPassword(password,rows[0].saltValue);
+            if(rows[0].password === hashedPassword){
+                if(req.session.loginInfo){
+                    afterSessionSaved(req,res);
+                }else{
+                    req.session.loginInfo = {
+                        ID : rows[0].id,
+                        position : rows[0].position,
+                        name : rows[0].name
+                    };
+                    req.session.count = 0;
+                    afterSessionSaved(req,res);
+                }
             }else{
-                req.session.loginInfo = {id : rows[0].id,password : rows[0].password};
-                req.session.count = 0;
-                afterSessionSaved(req,res);
-            }
+                res.send("userNotExist");
+            }            
         }else{
             res.send("userNotExist");
         }
@@ -224,9 +247,6 @@ app.post('/data/inquire',function(req,res){
     console.log(req.session);
     const id = req.session.loginInfo.id;
     const dataSet = req.body.name;
-    
-    console.log(req.body);
-    console.log(`${id}님이 ${dataSet} 데이터를 조회함`);
 
     if(id==='admin'){
         //원하는 데이터 셋이 없을 때 테이블의 전체 데이터 responce
@@ -275,6 +295,11 @@ app.post('/data/favorite/modify',function(req,res){
 
 //logout
 app.post('/user/logout',(req,res)=>{
-    req.session.destroy();
-    res.send('success');
+    if(req.session.loginInfo){
+        req.session.destroy();
+        res.send('success');
+    }else{
+        res.send('No users are logged in');
+    }
+    
 })
