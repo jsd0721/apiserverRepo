@@ -248,6 +248,7 @@ app.post('/data/inquire',function(req,res){
     const id = req.session.loginInfo.id;
     const dataSet = req.body.name;
 
+    console.log("조회를 요청한 id" + id);
     if(id==='admin'){
         //원하는 데이터 셋이 없을 때 테이블의 전체 데이터 responce
         if(dataSet === null || dataSet === undefined){
