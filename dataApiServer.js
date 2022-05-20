@@ -245,7 +245,7 @@ app.get('/loginCheck',(req,res)=>{
 app.post('/data/inquire',function(req,res){
 
     console.log(req.session);
-    const id = req.session.loginInfo.id;
+    const id = req.session.loginInfo.ID;
     const dataSet = req.body.name;
 
     console.log("조회를 요청한 id" + id);
