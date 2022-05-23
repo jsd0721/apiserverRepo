@@ -1,0 +1,49 @@
+html,body{
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+}
+#container{
+    width: 650px;
+    height: 650px;
+    vertical-align: middle;
+    font-size: CBNUJIKJI;
+    border: 1px solid black;
+}
+#title{
+    font-size: 80px;
+    font-family:SBAggroB ;
+}
+#number{
+    font-size: 40px;
+    font-family: yg-jalnan;
+}
+/* 김포평화체 */
+@font-face {
+    font-family: 'GimpoGothicBold00';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2202-2@1.0/GimpoGothicBold00.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+/* 어그로체 */
+@font-face {
+    font-family: 'SBAggroB';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/SBAggroB.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+/* 충북대직지체 */
+@font-face {
+    font-family: 'CBNUJIKJI';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2202@1.0/CBNUJIKJI.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+/* 여기어때 잘난체 */
+@font-face {
+    font-family: 'yg-jalnan';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_four@1.2/JalnanOTF00.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}

@@ -6,6 +6,7 @@ const FileStore = require('session-file-store')(session);
 const cookieParser = require('cookie-parser');
 const nodeMMailer = require('nodemailer');
 const crypto = require('crypto');
+const res = require('express/lib/response');
 
 const app = express();
 
@@ -139,11 +140,84 @@ app.get('/objects/:objectname',(req,res)=>{
 })
 
 //---------------------------------loginApi-------------------------
-
 const hashingPassword = (password,salt)=>{
     const hashedPW = crypto.createHash('sha256').update(password+salt).digest("hex");
     return hashedPW;
 }
+
+function getRandomArbitrary(min, max) {
+    return Math.random() * (max - min) + min;
+  }
+
+const smtptransport = nodeMMailer.createTransport({
+    service:"Gmail",
+    host:"smtp.gmail.com",
+    port:587,
+    auth:{
+        user:"noreply4435@gmail.com",
+        pass:"LXLX970040!!"
+    },
+    tls:{
+        rejectUnauthorized:false
+    }
+});
+
+
+
+app.post("/join/emailcheck",(req,res)=>{
+
+    
+
+    const randNum = getRandomArbitrary(111111,999999);
+    connection.query(`SELECT email FROM user_info WHERE email = '${req.body.email}'`,(err,rows,field)=>{
+        if(err){
+            console.log(err);
+        }
+        if(rows[0] !== undefined){
+            res.send('0');
+        }else{
+            const randomNum = Math.random()*100000;
+            const templete = `<!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta http-equiv="X-UA-Compatible" content="IE=edge">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <link rel="stylesheet" href="./templete.css">
+                <title>Document</title>
+            </head>
+            <body>
+                <div id='container'>
+                    <div id='title'>WithView</div>
+                    <div>
+                        <p>(주)함께드론맵핑 사의 WithView에서 인증번호를 보내왔습니다.</p>
+                        <p>아래의 인증번호를 입력해 주세요</p>
+                        <p id='number'>${randNum}</p>
+                    </div>
+                </div>
+                
+            </body>
+            </html>`;
+
+            const mailOptions = {
+                from:"noreply4435@gmail.com",
+                // to:`${req.body.email}`,
+                to:"whtjdehd12@naver.com",
+                subject:"이메일 인증",
+                html : templete,
+            };
+            
+            smtptransport.sendMail(mailOptions,(err,info)=>{
+                if(err){
+                    console.log(err);
+                }else{
+                    res.send("1");
+                }
+            })
+
+        }
+    })
+})
 
 app.post("/join",(req,res)=>{
 
@@ -248,7 +322,6 @@ app.post('/data/inquire',function(req,res){
     const id = req.session.loginInfo.ID;
     const dataSet = req.body.name;
 
-    console.log("조회를 요청한 id" + id);
     if(id==='admin'){
         //원하는 데이터 셋이 없을 때 테이블의 전체 데이터 responce
         if(dataSet === null || dataSet === undefined){
@@ -278,7 +351,6 @@ app.post('/data/inquire',function(req,res){
         }else{
             connection.query(`SELECT * FROM instaView_data WHERE id = '${id}' AND num = ${dataSet}`,(err,result,field)=>{
                 if(err){console.log(err)}
-                console.log(`조회 item : ${result[0]}`);
                 req.session.nowContent = dataSet;
                 res.send(result);
             });
