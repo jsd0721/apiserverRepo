@@ -7,6 +7,7 @@ const cookieParser = require('cookie-parser');
 const nodeMMailer = require('nodemailer');
 const crypto = require('crypto');
 const ejs = require('ejs');
+const path = require('path');
 
 const app = express();
 
