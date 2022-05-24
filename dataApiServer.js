@@ -175,42 +175,13 @@ app.post("/join/emailcheck",(req,res)=>{
             res.send('0');
         }else{
             const randomNum = Math.random()*100000;
-            // const templete = `<!DOCTYPE html>
-            // <html lang="en">
-            // <head>
-            //     <meta charset="UTF-8">
-            //     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-            //     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            //     <link rel="stylesheet" href="./templete.css">
-            //     <title>Document</title>
-            // </head>
-            // <body>
-            //     <div id='container'>
-            //         <div id='title'>WithView</div>
-            //         <div>
-            //             <p>(주)함께드론맵핑 사의 WithView에서 인증번호를 보내왔습니다.</p>
-            //             <p>아래의 인증번호를 입력해 주세요</p>
-            //             <p id='number'>${randNum}</p>
-            //         </div>
-            //     </div>
-                
-            // </body>
-            // </html>`;
-            ejs.renderFile("./emailAuth.ejs",{authNum : randNum},(err,data)=>{
-                if(err){
-                    console.log(err);
-                }else{
-                    templete = data;
-                }
-            })
-
 
             const mailOptions = {
                 from:"noreply4435@gmail.com",
                 // to:`${req.body.email}`,
                 to:"whtjdehd12@naver.com",
                 subject:"이메일 인증",
-                html : templete
+                html : ejs.render("emailAuth",)
             };
             
             smtptransport.sendMail(mailOptions,(err,info)=>{
