@@ -185,7 +185,7 @@ app.post("/join/emailcheck",(req,res)=>{
                 // to:`${req.body.email}`,
                 to:"whtjdehd12@naver.com",
                 subject:"이메일 인증",
-                html : ejs.render("emailAuth",{authNum:randNum})
+                html : ejs.render('/emailAuth.ejs',{authNum:randNum})
             };
             
             smtptransport.sendMail(mailOptions,(err,info)=>{
