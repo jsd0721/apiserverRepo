@@ -179,13 +179,19 @@ app.post("/join/emailcheck",(req,res)=>{
             res.send('0');
         }else{
             const randomNum = Math.random()*100000;
-
+            ejs.renderFile("./emailAuth.ejs",{authNum:randNum},(err,data)=>{
+                if(err){
+                    console.log(err);
+                }else{
+                    templete = data;
+                }
+            })
             const mailOptions = {
                 from:"noreply4435@gmail.com",
                 // to:`${req.body.email}`,
                 to:"whtjdehd12@naver.com",
                 subject:"이메일 인증",
-                html : ejs.render('/emailAuth.ejs',{authNum:randNum})
+                html : templete,
             };
             
             smtptransport.sendMail(mailOptions,(err,info)=>{
