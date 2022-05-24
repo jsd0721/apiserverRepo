@@ -38,6 +38,8 @@ const connectFunction = ()=>{
 
 connectFunction();
 
+app.use(express.static(path.join(__dirname, '../public')));
+
 app.use(cookieParser());
 app.use(session({
     secret:'iwanttoquitmyjob',
@@ -146,7 +148,8 @@ const hashingPassword = (password,salt)=>{
 }
 
 function getRandomArbitrary(min, max) {
-    return Math.random() * (max - min) + min;
+    const num = Math.floor(Math.random() * (max - min) + min);
+    return num;
   }
 
 const smtptransport = nodeMMailer.createTransport({
@@ -181,7 +184,7 @@ app.post("/join/emailcheck",(req,res)=>{
                 // to:`${req.body.email}`,
                 to:"whtjdehd12@naver.com",
                 subject:"이메일 인증",
-                html : ejs.render("emailAuth",)
+                html : ejs.render("emailAuth",{authNum:randNum})
             };
             
             smtptransport.sendMail(mailOptions,(err,info)=>{
