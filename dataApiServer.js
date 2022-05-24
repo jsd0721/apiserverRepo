@@ -176,7 +176,10 @@ app.post("/join/emailcheck",(req,res)=>{
             console.log(err);
         }
         if(rows[0] !== undefined){
-            res.send('0');
+            res.json({
+                log:"email already exist",
+                code : 0,
+            });
         }else{
             const randomNum = Math.random()*100000;
             ejs.renderFile("./emailAuth.ejs",{authNum:randNum},(err,data)=>{
@@ -199,7 +202,10 @@ app.post("/join/emailcheck",(req,res)=>{
                     console.log(err);
                 }else{
                     console.log('whtjdehd12@naver.com으로 메일 보냄');
-                    res.send("1");
+                    res.json({
+                        log : "email send success",
+                        code : 1,
+                    });
                 }
             })
 
