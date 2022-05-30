@@ -12,7 +12,7 @@ const path = require('path');
 const app = express();
 
 const corsOptions = {
-    origin: ['https://withdrone.tk',"https://172.30.1.6"],
+    origin: ['https://withdrone.tk',"https://172.30.1.6",'https://withdrone.co.kr'],
     credentials : true
   };
 
