@@ -170,59 +170,49 @@ const smtptransport = nodeMMailer.createTransport({
 
 app.post("/join/emailcheck",(req,res)=>{
     let templete;
-    const randNum = getRandomArbitrary(111111,999999);
-    console.log(`클라이언트에서 보낸 번호 : ${req.body.authNum}`);
-        console.log(`생성한 번호 : ${randNum}`);
-    if(req.body.isSendNumber===1){
-        if(req.body.authNum===randNum){
-            res.send("success");
-        }else{
-            res.send("failed");
+    const randNum = getRandomArbitrary(111111,999999);//api 호출마다 계속 새로 생성됨->어떻게 해결해야될까
+    // console.log(`클라이언트에서 보낸 번호 : ${req.body.authNum}`);
+    // console.log(`생성한 번호 : ${randNum}`);
+    connection.query(`SELECT email FROM user_info WHERE email = '${req.body.email}'`,(err,rows,field)=>{
+        if(err){
+            console.log(err);
         }
-
-    }else{//인증번호 메일을 보내지 않았으면 아래 로직 실행
-        connection.query(`SELECT email FROM user_info WHERE email = '${req.body.email}'`,(err,rows,field)=>{
-            if(err){
-                console.log(err);
-            }
-            if(rows[0] !== undefined){
-                res.json({
-                    log:"email already exist",
-                    code : 0,
-                });
-            }else{
-                ejs.renderFile("./emailAuth.ejs",{authNum:randNum},(err,data)=>{
-                    if(err){
-                        console.log(err);
-                    }else{
-                        templete = data;
-                    }
-                })
-                const mailOptions = {
-                    from:"noreply4435@gmail.com",
-                    // to:`${req.body.email}`,
-                    to:"whtjdehd12@naver.com",
-                    subject:"이메일 인증",
-                    html : templete,
-                };
-                
-                smtptransport.sendMail(mailOptions,(err,info)=>{
-                    if(err){
-                        console.log(err);
-                    }else{
-                        console.log('whtjdehd12@naver.com으로 메일 보냄');
-                        res.json({
-                            log : "email send success",
-                            code : 1,
-                        });
-                    }
-                })
-    
-            }
-        });
-    }
-
-})
+        if(rows[0] !== undefined){
+            res.json({
+                log:"email already exist",
+                code : 0,
+            });
+        }else{
+            ejs.renderFile("./emailAuth.ejs",{authNum:randNum},(err,data)=>{
+                if(err){
+                    console.log(err);
+                }else{
+                    templete = data;
+                }
+            })
+            const mailOptions = {
+                from:"noreply4435@gmail.com",
+                // to:`${req.body.email}`,
+                to:"whtjdehd12@naver.com",
+                subject:"이메일 인증",
+                html : templete,
+            };
+            
+            smtptransport.sendMail(mailOptions,(err,info)=>{
+                if(err){
+                    console.log(err);
+                }else{
+                    console.log('whtjdehd12@naver.com으로 메일 보냄');
+                    res.json({
+                        log : "email send success",
+                        code : 1,
+                        authNum : randNum
+                    });
+                }
+            });
+        }
+    });
+});
 
 app.post("/join",(req,res)=>{
 
