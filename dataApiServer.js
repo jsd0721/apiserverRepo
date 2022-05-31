@@ -171,46 +171,62 @@ const smtptransport = nodeMMailer.createTransport({
 app.post("/join/emailcheck",(req,res)=>{
     let templete;
     const randNum = getRandomArbitrary(111111,999999);
-    connection.query(`SELECT email FROM user_info WHERE email = '${req.body.email}'`,(err,rows,field)=>{
-        if(err){
-            console.log(err);
+    if(req.data.isSendNumber===1){
+        switch(req.data.authNum===randNum){
+            case true:
+                res.send("success");
+                break;
+            case false:
+                res.send("failed");
+                break;
+            default:
+                res.send("not only success but also failed");
+                break;
         }
-        if(rows[0] !== undefined){
-            res.json({
-                log:"email already exist",
-                code : 0,
-            });
-        }else{
-            const randomNum = Math.random()*100000;
-            ejs.renderFile("./emailAuth.ejs",{authNum:randNum},(err,data)=>{
-                if(err){
-                    console.log(err);
-                }else{
-                    templete = data;
-                }
-            })
-            const mailOptions = {
-                from:"noreply4435@gmail.com",
-                // to:`${req.body.email}`,
-                to:"whtjdehd12@naver.com",
-                subject:"이메일 인증",
-                html : templete,
-            };
-            
-            smtptransport.sendMail(mailOptions,(err,info)=>{
-                if(err){
-                    console.log(err);
-                }else{
-                    console.log('whtjdehd12@naver.com으로 메일 보냄');
-                    res.json({
-                        log : "email send success",
-                        code : 1,
-                    });
-                }
-            })
 
-        }
-    })
+    }else{//인증번호 메일을 보내지 않았으면 아래 로직 실행
+        connection.query(`SELECT email FROM user_info WHERE email = '${req.body.email}'`,(err,rows,field)=>{
+            if(err){
+                console.log(err);
+            }
+            if(rows[0] !== undefined){
+                res.json({
+                    log:"email already exist",
+                    code : 0,
+                });
+            }else{
+                const randomNum = Math.random()*100000;
+                ejs.renderFile("./emailAuth.ejs",{authNum:randNum},(err,data)=>{
+                    if(err){
+                        console.log(err);
+                    }else{
+                        templete = data;
+                    }
+                })
+                const mailOptions = {
+                    from:"noreply4435@gmail.com",
+                    // to:`${req.body.email}`,
+                    to:"whtjdehd12@naver.com",
+                    subject:"이메일 인증",
+                    html : templete,
+                };
+                
+                smtptransport.sendMail(mailOptions,(err,info)=>{
+                    if(err){
+                        console.log(err);
+                    }else{
+                        console.log('whtjdehd12@naver.com으로 메일 보냄');
+                        res.json({
+                            log : "email send success",
+                            code : 1,
+                        });
+                    }
+                })
+    
+            }
+        });
+    }
+
 })
 
 app.post("/join",(req,res)=>{
