@@ -171,8 +171,8 @@ const smtptransport = nodeMMailer.createTransport({
 app.post("/join/emailcheck",(req,res)=>{
     let templete;
     const randNum = getRandomArbitrary(111111,999999);
-    console.log(req.body.authNum);
-    console.log(randNum);
+    console.log(`클라이언트에서 보낸 번호 : ${req.body.authNum}`);
+        console.log(`생성한 번호 : ${randNum}`);
     if(req.body.isSendNumber===1){
         if(req.body.authNum===randNum){
             res.send("success");
@@ -191,7 +191,6 @@ app.post("/join/emailcheck",(req,res)=>{
                     code : 0,
                 });
             }else{
-                const randomNum = Math.random()*100000;
                 ejs.renderFile("./emailAuth.ejs",{authNum:randNum},(err,data)=>{
                     if(err){
                         console.log(err);
