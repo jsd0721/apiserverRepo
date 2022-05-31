@@ -171,9 +171,9 @@ const smtptransport = nodeMMailer.createTransport({
 app.post("/join/emailcheck",(req,res)=>{
     let templete;
     const randNum = getRandomArbitrary(111111,999999);
-    console.log(req.data);
-    if(req.data.isSendNumber===1){
-        switch(req.data.authNum===randNum){
+    console.log(req.body);
+    if(req.body.isSendNumber===1){
+        switch(req.body.authNum===randNum){
             case true:
                 res.send("success");
                 break;
