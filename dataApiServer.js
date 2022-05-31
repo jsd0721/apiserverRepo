@@ -174,16 +174,10 @@ app.post("/join/emailcheck",(req,res)=>{
     console.log(req.body.authNum);
     console.log(randNum);
     if(req.body.isSendNumber===1){
-        switch(req.body.authNum===randNum){
-            case true:
-                res.send("success");
-                break;
-            case false:
-                res.send("failed");
-                break;
-            default:
-                res.send("not only success but also failed");
-                break;
+        if(req.body.authNum===randNum){
+            res.send("success");
+        }else{
+            res.send("failed");
         }
 
     }else{//인증번호 메일을 보내지 않았으면 아래 로직 실행
