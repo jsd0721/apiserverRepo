@@ -201,7 +201,7 @@ app.post("/join/emailcheck",(req,res)=>{
                 if(err){
                     console.log(err);
                 }else{
-                    console.log('whtjdehd12@naver.com으로 메일 보냄');
+                    console.log(`${req.body.email}으로 메일 보냄`);
                     res.json({
                         log : "email send success",
                         code : 1,
