@@ -159,7 +159,7 @@ const smtptransport = nodeMMailer.createTransport({
     port:587,
     auth:{
         user:"noreply4435@gmail.com",
-        pass:"LXLX970040!!"
+        pass:"oxycthbubozvqspj"
     },
     tls:{
         rejectUnauthorized:false
@@ -192,7 +192,8 @@ app.post("/join/emailcheck",(req,res)=>{
             })
             const mailOptions = {
                 from:"noreply4435@gmail.com",
-                to:`${req.body.email}`,
+                to:"whtjdehd12@naver.com",
+                // to:`${req.body.email}`,
                 subject:"이메일 인증",
                 html : templete,
             };
