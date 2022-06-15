@@ -325,8 +325,19 @@ app.post('/data/inquire',function(req,res){
                 for(data in result){console.log(data.name);}
                 res.send(result);
             });
-        }else if(id==='test'){
-            connection.query(`SELECT * FROM instaView_data WHERE num='10' and num= '15'`,( error,result,field )=>{
+        }else{
+            //dataset의 이름을 받았을때는 그 데이터셋을 보내줌
+            connection.query(`SELECT * FROM instaView_data WHERE num = ${dataSet}`,(err,result,field)=>{
+                if(err){console.log(err)}
+                console.log(result);
+                req.session.nowContent = dataSet;
+                res.send(result);
+            });
+        }
+    }else if(id==='test'){
+         //원하는 데이터 셋이 없을 때 테이블의 전체 데이터 responce
+         if(dataSet === null || dataSet === undefined){
+            connection.query(`SELECT * FROM instaView_data WHERE num='15' AND num='10'`,( error,result,field )=>{
                 if(error){console.log(error);}
                 for(data in result){console.log(data.name);}
                 res.send(result);
