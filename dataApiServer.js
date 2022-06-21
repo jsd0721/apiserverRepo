@@ -12,8 +12,8 @@ const path = require('path');
 const app = express();
 
 const corsOptions = {
-    origin: ['https://withdrone.tk',"https://172.30.1.6",'https://withdrone.co.kr','https://localhost'],
-    credentials : true
+	origin: ['https://withdrone.tk',"https://172.30.1.6","https://175.215.182.104",'https://withdrone.co.kr'],
+    	credentials : true
   };
 
 
@@ -321,12 +321,6 @@ app.post('/data/inquire',function(req,res){
         //원하는 데이터 셋이 없을 때 테이블의 전체 데이터 responce
         if(dataSet === null || dataSet === undefined){
             connection.query(`SELECT * FROM instaView_data`,( error,result,field )=>{
-                if(error){console.log(error);}
-                for(data in result){console.log(data.name);}
-                res.send(result);
-            });
-        }else if(id==='test'){
-            connection.query(`SELECT * FROM instaView_data WHERE num='10' and num= '15'`,( error,result,field )=>{
                 if(error){console.log(error);}
                 for(data in result){console.log(data.name);}
                 res.send(result);
