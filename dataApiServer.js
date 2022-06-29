@@ -337,7 +337,7 @@ app.post('/data/inquire',function(req,res){
     }else if(id==='test'){
          //원하는 데이터 셋이 없을 때 테이블의 전체 데이터 responce
          if(dataSet === null || dataSet === undefined){
-            connection.query(`SELECT * FROM instaView_data WHERE num='15' AND num='10'`,( error,result,field )=>{
+            connection.query(`SELECT * FROM instaView_data WHERE id='${id}'`,( error,result,field )=>{
                 if(error){console.log(error);}
                 for(data in result){console.log(data.name);}
                 res.send(result);
