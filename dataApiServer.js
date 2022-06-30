@@ -370,6 +370,19 @@ app.post('/data/inquire',function(req,res){
     }
 })
 
+// dashboard / addData
+app.post('/data/dashboard/addData',function(req,res){
+    const { Do , si, jigu, id, year, epsg, survey, cityPlan} = req.body
+
+    connection.query(`INSERT INTO instaView_data(
+id,do,si,name,year,jsonPath,krpanoPath,jpgPath,jgwPath,epsg,afterJson,thumbnailPath,cityPlanningLinePath)
+values(
+	'${id}','${Do}','${si}','${jigu}',${year},
+	'${jigu+'.geojson'}','${'vtour_'+jigu}',
+	'${jigu+'.jpg'}','${jigu+'.jgw'}','${epsg}','${survey}','${jigu+'thumb.jpg'}','${cityPlan}'
+);`);
+})
+
 // custom / favorite 
 app.post('/data/favorite/modify',function(req,res){
     const id = req.session.loginInfo.id;
