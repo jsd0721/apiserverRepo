@@ -323,7 +323,7 @@ app.post('/data/inquire',function(req,res){
             connection.query(`SELECT * FROM instaView_data`,( error,result,field )=>{
                 if(error){console.log(error);}
                 for(data in result){console.log(data.name);}
-                res.send(result);
+                res.send({id:id , data:result});
             });
         }else{
             //dataset의 이름을 받았을때는 그 데이터셋을 보내줌
@@ -340,7 +340,7 @@ app.post('/data/inquire',function(req,res){
             connection.query(`SELECT * FROM instaView_data WHERE id='${id}'`,( error,result,field )=>{
                 if(error){console.log(error);}
                 for(data in result){console.log(data.name);}
-                res.send(result);
+                res.send({id:id , data:result});
             });
         }else{
             //dataset의 이름을 받았을때는 그 데이터셋을 보내줌
@@ -357,7 +357,7 @@ app.post('/data/inquire',function(req,res){
             connection.query(`SELECT * FROM instaView_data WHERE id = '${id}'`,( error,result,field )=>{
                 if(error){console.log(error);}
                 for(data in result){console.log(result[data].name);}
-                res.send(result);
+                res.send({id:id , data:result});
             });
         //데이터셋의 이름을 request 했다면 그 데이터셋을 responce
         }else{
